@@ -1,1 +1,3 @@
-console.log("Hello mom");
+import repl from "./repl.ts";
+
+repl.start();
