@@ -10,7 +10,13 @@ const repl = {
   start: () => {
     while (true) {
       const line = prompt("user> ");
-      line && console.log(rep(line));
+      try {
+        if (line) {
+          console.log(rep(line));
+        }
+      } catch (error) {
+        console.error(`%c${error}`, "color: red");
+      }
     }
   },
 };
