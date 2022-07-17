@@ -18,10 +18,12 @@ const createTree = (str: string) => {
 
       let open = 1;
       let j = i + 1;
-      while (open) {
+      // For-loop fixes freezing on missing closing parens
+      // TODO: Gracefully crash on missing closing parens
+      for (; j < length; ++j) {
         if (str[j] === "(") ++open;
         if (str[j] === ")") --open;
-        ++j;
+        if (open === 0) break;
       }
 
       const segment = str.slice(i + 1, j - 1);
