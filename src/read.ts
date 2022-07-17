@@ -8,7 +8,7 @@ const createTree = (str: string) => {
   const pushToken = () => {
     if (!token) return;
     token = token.trim();
-    token && ast.push(token);
+    token && ast.push(...token.split(" "));
     token = "";
   };
 
