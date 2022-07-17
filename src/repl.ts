@@ -1,8 +1,8 @@
-const READ = (str: string) => str;
+import reader, { type Ast } from "./read.ts";
 
-const EVAL = (ast: string) => ast;
-
-const PRINT = (exp: string) => exp;
+const READ = (str: string) => reader.read(str);
+const EVAL = (ast: Ast) => ast;
+const PRINT = (exp: any) => exp;
 
 const rep = (str: string) => PRINT(EVAL(READ(str)));
 
