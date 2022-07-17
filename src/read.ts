@@ -6,9 +6,9 @@ const createTree = (str: string) => {
   let token = "";
 
   const pushToken = () => {
-    if (!token) return;
     token = token.trim();
-    token && ast.push(...token.split(" "));
+    if (!token) return;
+    ast.push(...token.split(" "));
     token = "";
   };
 
@@ -24,20 +24,19 @@ const createTree = (str: string) => {
         ++j;
       }
 
-      const segment = str.slice(i + 1, j + 1);
+      const segment = str.slice(i + 1, j - 1);
       const _ast = createTree(segment);
       ast.push(_ast);
 
-      i = j;
+      i = j - 1;
     }
 
-    if (str[i] === ")") {
-      pushToken();
-      continue;
-    }
+    if (str[i] === ")") continue;
 
     token += str[i];
   }
+
+  pushToken();
 
   return ast;
 };
