@@ -31,6 +31,7 @@ const apply = (ast: Ast): Atom => {
 const _eval = (ast: Ast, env: Env) => {
   if (!Array.isArray(ast)) return ast;
 
+  ast = ast.filter((exp) => Array.isArray(exp));
   ast = ast.map((exp) => evalAst(exp, env));
 
   return ast.map((exp) => apply(exp));

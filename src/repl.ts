@@ -8,7 +8,8 @@ import type { Atom } from "./atom.ts";
 import Error from "@utils/error.ts";
 
 const READ = (str: string) => reader.read(str);
-const EVAL = (ast: Ast, env: Env) => evaluator.eval(ast, env);
+const EVAL = (ast: Ast, env: Env) =>
+  (console.log(ast) as undefined) || evaluator.eval(ast, env);
 const PRINT = (exp: Atom | Atom[]) => printer.print(exp);
 
 const rep = (str: string, env: Env) => PRINT(EVAL(READ(str), env));
