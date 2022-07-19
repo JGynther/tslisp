@@ -1,4 +1,6 @@
-type Ast = string | Ast[];
+import { atomize, type Atom } from "./atom.ts";
+
+type Ast = Atom | Ast[];
 
 const createTree = (str: string) => {
   const ast: Ast = [];
@@ -7,8 +9,12 @@ const createTree = (str: string) => {
 
   const pushToken = () => {
     token = token.trim();
+
     if (!token) return;
-    ast.push(...token.split(" "));
+
+    const atoms = atomize(token.split(" "));
+    ast.push(...atoms);
+
     token = "";
   };
 
