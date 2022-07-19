@@ -16,7 +16,7 @@ const handleDef = (ast: Ast[], env: Env) => {
 
 const evalAst = (ast: Ast, env: Env): Ast => {
   if (Array.isArray(ast)) {
-    if (ast[0] === "def") return handleDef(ast, env);
+    if (ast[0] === "def" || ast[0] === "defc") return handleDef(ast, env);
     return ast.map((ast) => evalAst(ast, env));
   }
 
