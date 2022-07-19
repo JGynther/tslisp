@@ -3,8 +3,22 @@ import type { Env } from "./env.ts";
 import type { Atom } from "./atom.ts";
 import Error from "@utils/error.ts";
 
+// TODO: add better verification for key
+const handleDef = (ast: Ast[], env: Env) => {
+  const key = ast[1];
+
+  ast.splice(1, 1);
+  ast = ast.map((ast) => evalAst(ast, env));
+  ast.splice(1, 0, key);
+
+  return ast;
+};
+
 const evalAst = (ast: Ast, env: Env): Ast => {
-  if (Array.isArray(ast)) return ast.map((ast) => evalAst(ast, env));
+  if (Array.isArray(ast)) {
+    if (ast[0] === "def") return handleDef(ast, env);
+    return ast.map((ast) => evalAst(ast, env));
+  }
 
   if (typeof ast === "string") {
     if (ast[0] === '"' && ast[ast.length - 1] === '"') return ast;
