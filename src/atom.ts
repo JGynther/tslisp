@@ -1,4 +1,5 @@
-type Atom = string | number | boolean | null;
+// deno-lint-ignore ban-types
+type Atom = Function | string | number | boolean | null;
 
 const atom = (token: string) => {
   // If given atom is a number
