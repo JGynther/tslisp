@@ -1,4 +1,5 @@
 import reader, { type Ast } from "./read.ts";
+import Error from "@utils/error.ts";
 
 const READ = (str: string) => reader.read(str);
 const EVAL = (ast: Ast) => ast;
@@ -15,7 +16,7 @@ const repl = {
           console.log(rep(line));
         }
       } catch (error) {
-        console.error(`%c${error}`, "color: red");
+        Error.log(error);
       }
     }
   },

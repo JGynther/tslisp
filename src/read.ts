@@ -1,4 +1,5 @@
 import { atomize, type Atom } from "./atom.ts";
+import Error from "@utils/error.ts";
 
 type Ast = Atom | Ast[];
 
@@ -31,17 +32,12 @@ const createTree = (str: string) => {
       }
 
       // On a missing closing parenthesis
-      // TODO: improve error message construction
       if (open)
-        throw (
-          "Error: expected a ')' near\n" +
-          "-".repeat(30) +
-          "\n" +
-          `1:${i} |  ` +
-          str.slice(i, j + 1) +
-          "\n" +
-          "-".repeat(30)
-        );
+        Error.panic({
+          message: "missing closing parenthesis ')' near",
+          line: i,
+          code: str.slice(i, j + 1),
+        });
 
       const segment = str.slice(i + 1, j);
       const _ast = createTree(segment);
