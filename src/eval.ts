@@ -19,6 +19,8 @@ const evalAst = (ast: Ast, env: Env): Ast => {
 const apply = (ast: Ast): Atom => {
   if (!Array.isArray(ast)) return ast;
 
+  if (ast.length < 2) return (ast[0] ? ast[0] : null) as Atom;
+
   if (!(typeof ast[0] === "function"))
     return Error.panic({ message: "not a function", code: ast.toString() });
 
