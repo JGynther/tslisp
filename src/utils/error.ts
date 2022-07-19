@@ -4,7 +4,11 @@ type Error = {
   code?: string;
 };
 
-const create = (err: Error) => {
+const create = (err: Error | string) => {
+  if (typeof err === "string") {
+    return `Error: ${err}`;
+  }
+
   const { message, line, code } = err;
 
   let error = `Error: ${message} \n`;
@@ -19,7 +23,7 @@ const create = (err: Error) => {
   return error;
 };
 
-const panic = (err: Error) => {
+const panic = (err: Error | string) => {
   throw create(err);
 };
 

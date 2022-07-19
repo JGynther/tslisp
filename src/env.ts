@@ -17,12 +17,10 @@ const constantKeys: string[] = [];
 
 const set = (env: Env, key: string, value: Atom, constant = false) => {
   if (reservedKeys.includes(key))
-    Error.panic({
-      message: `cannot (re)define reserved variable: ${key}`,
-    });
+    Error.panic(`cannot (re)define reserved variable: ${key}`);
 
   if (constantKeys.includes(key))
-    Error.panic({ message: `cannot redefine constant: ${key}` });
+    Error.panic(`cannot redefine constant: ${key}`);
 
   env[key] = value;
   if (constant) constantKeys.push(key);
