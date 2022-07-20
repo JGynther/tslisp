@@ -30,3 +30,4 @@ const repl = {
 };
 
 export default repl;
+export { rep };

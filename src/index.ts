@@ -1,3 +1,9 @@
 import repl from "./repl.ts";
+import filereader from "./file.ts";
 
-repl.start();
+// TODO: clean this up
+if (Deno.args[0]) {
+  filereader.read(Deno.args[0]);
+} else {
+  repl.start();
+}
