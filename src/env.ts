@@ -46,14 +46,14 @@ const env: Env = {
 };
 
 const newEnv = (outer: Env): Env => {
-  const env: Env = {
+  const _env: Env = {
     outer,
     constants: [],
-    def: (key: string, value: Atom) => set(env, key, value),
-    defc: (key: string, value: Atom) => setConst(env, key, value),
+    def: (key: string, value: Atom) => set(_env, key, value),
+    defc: (key: string, value: Atom) => setConst(_env, key, value),
   };
 
-  return env;
+  return _env;
 };
 
 export default env;
