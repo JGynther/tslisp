@@ -20,6 +20,12 @@ const createTree = (str: string) => {
   };
 
   for (let i = 0; i < length; ++i) {
+    // Handle comments
+    if (str[i] === ";") {
+      for (; i < length; ++i) if (str[i] === "\n") break;
+      continue;
+    }
+
     if (str[i] === "(") {
       pushToken();
 
