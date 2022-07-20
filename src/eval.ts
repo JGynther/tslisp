@@ -24,7 +24,7 @@ const evalAst = (ast: Ast, env: Env): Ast => {
     if (ast[0] === '"' && ast[ast.length - 1] === '"') return ast;
 
     if (ast in env) return env[ast];
-    else return Error.panic({ message: `unknown variable: ${ast}`, code: ast });
+    else return Error.panic(`unknown variable: ${ast}`);
   }
 
   return ast;
@@ -35,8 +35,7 @@ const apply = (ast: Ast): Atom => {
 
   if (ast.length < 2) return (ast[0] ? ast[0] : null) as Atom;
 
-  if (!(typeof ast[0] === "function"))
-    return Error.panic({ message: "not a function", code: ast.toString() });
+  if (!(typeof ast[0] === "function")) return Error.panic("not a function");
 
   let [fn, ...args] = ast;
   args = args.map((exp) => apply(exp));
@@ -47,10 +46,22 @@ const apply = (ast: Ast): Atom => {
 const _eval = (ast: Ast, env: Env) => {
   if (!Array.isArray(ast)) return ast;
 
-  ast = ast.filter((exp) => Array.isArray(exp));
-  ast = ast.map((exp) => evalAst(exp, env));
+  const res: Atom[] = [];
 
-  return ast.map((exp) => apply(exp));
+  ast.forEach((exp) => {
+    if (!Array.isArray(exp)) return;
+
+    try {
+      exp = evalAst(exp, env);
+      exp = apply(exp);
+      res.push(exp);
+    } catch (error) {
+      // Improve error creation on code prettyfying
+      Error.panic({ message: error, code: exp?.toString() });
+    }
+  });
+
+  return res;
 };
 
 const evaluator = {

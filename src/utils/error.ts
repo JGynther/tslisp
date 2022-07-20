@@ -17,7 +17,7 @@ const create = (err: Error | string) => {
 
   const length = error.length;
   error += "-".repeat(length) + "\n";
-  error += `${line} |  ${code}` + "\n";
+  error += `${line ? line : ""} |  ${code}` + "\n";
   error += "-".repeat(length) + "\n";
 
   return error;
