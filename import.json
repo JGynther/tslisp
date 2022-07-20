@@ -1,5 +1,6 @@
 {
     "imports": {
-        "@utils/": "./src/utils/"
+        "@utils/": "./src/utils/",
+        "@example/": "./src/example/"
     }
 }
