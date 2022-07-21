@@ -1,5 +1,5 @@
-import type { Ast } from "./read.ts";
-import type { Env } from "./env.ts";
+import type { Ast, KeyVal } from "./read.ts";
+import { type Env, newEnv } from "./env.ts";
 import type { Atom } from "./atom.ts";
 import Error from "@utils/error.ts";
 
@@ -14,17 +14,42 @@ const handleDef = (ast: Ast[], env: Env) => {
   return ast;
 };
 
+// Evaluate let expressions "out of" normal loop,
+// ie. implement a loop similar to normal eval loop
+const evalLet = (ast: Ast[], _env: Env) => {
+  const [, bindings, ...rest] = ast as [string, KeyVal[], Ast];
+  const env = newEnv(_env);
+
+  if (!Array.isArray(bindings))
+    return Error.panic("let bindings must be a list");
+
+  // Bind using default env.def for safety
+  bindings.forEach(([key, value]) => env.def(key, value));
+
+  // Mimic normal eval loop
+  let tmp = rest.map((exp) => evalAst(exp, env));
+  tmp = tmp.map((exp) => apply(exp));
+
+  return tmp[tmp.length - 1];
+};
+
+// TODO: check for unallowed keys
+const resolveKey = (key: string, env: Env): Atom => {
+  if (key in env) return env[key] as Atom;
+  if (env.outer) return resolveKey(key, env.outer);
+  return Error.panic(`unknown variable: ${key}`);
+};
+
 const evalAst = (ast: Ast, env: Env): Ast => {
   if (Array.isArray(ast)) {
     if (ast[0] === "def" || ast[0] === "defc") return handleDef(ast, env);
+    if (ast[0] === "let") return evalLet(ast, env);
     return ast.map((ast) => evalAst(ast, env));
   }
 
   if (typeof ast === "string") {
     if (ast[0] === '"' && ast[ast.length - 1] === '"') return ast;
-
-    if (ast in env) return env[ast];
-    else return Error.panic(`unknown variable: ${ast}`);
+    return resolveKey(ast, env);
   }
 
   return ast;

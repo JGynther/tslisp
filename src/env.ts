@@ -5,13 +5,15 @@ type Constants = string[];
 type Env = {
   outer: Env | null;
   constants: Constants;
+  def: (key: string, value: Atom) => Atom;
+  defc: (key: string, value: Atom) => Atom;
   [key: string]: Atom | Env | Constants;
 };
 
 // prettier-ignore
 const reservedKeys = [
     // Keywords
-    "def", "set", "write", 
+    "def", "defc", "let", "set", "write", 
     // Basic operators
     "+", "-", "*", "/", 
     // Base values
@@ -26,11 +28,15 @@ const set = (env: Env, key: string, value: Atom) => {
     Error.panic(`cannot redefine constant: ${key}`);
 
   env[key] = value;
+
+  return value;
 };
 
 const setConst = (env: Env, key: string, value: Atom) => {
   set(env, key, value);
   env.constants.push(key);
+
+  return value;
 };
 
 const env: Env = {

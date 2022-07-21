@@ -1,7 +1,8 @@
 import { atomize, type Atom } from "./atom.ts";
 import Error from "@utils/error.ts";
 
-type Ast = Atom | Ast[];
+type KeyVal = [string, Atom];
+type Ast = Atom | KeyVal | Ast[];
 
 const createTree = (str: string) => {
   const ast: Ast = [];
@@ -71,4 +72,4 @@ const reader = {
 };
 
 export default reader;
-export type { Ast };
+export type { Ast, KeyVal };
