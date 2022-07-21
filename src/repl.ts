@@ -1,6 +1,6 @@
 import reader, { type Ast } from "./read.ts";
 import printer from "./print.ts";
-import evaluator from "./eval.ts";
+import evaluator from "./eval/index.ts";
 
 import env, { type Env } from "./env.ts";
 

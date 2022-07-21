@@ -1,44 +1,12 @@
-import type { Ast, KeyVal } from "./read.ts";
-import { type Env, newEnv } from "./env.ts";
-import type { Atom } from "./atom.ts";
+import type { Ast } from "../read.ts";
+import type { Env } from "../env.ts";
+import type { Atom } from "../atom.ts";
+
+import evalLet from "./let.ts";
+import handleDef from "./def.ts";
+import resolveKey from "./key.ts";
+
 import Error from "@utils/error.ts";
-
-// TODO: add better verification for key
-const handleDef = (ast: Ast[], env: Env) => {
-  const key = ast[1];
-
-  ast.splice(1, 1);
-  ast = ast.map((ast) => evalAst(ast, env));
-  ast.splice(1, 0, key);
-
-  return ast;
-};
-
-// Evaluate let expressions "out of" normal loop,
-// ie. implement a loop similar to normal eval loop
-const evalLet = (ast: Ast[], _env: Env) => {
-  const [, bindings, ...rest] = ast as [string, KeyVal[], Ast];
-  const env = newEnv(_env);
-
-  if (!Array.isArray(bindings))
-    return Error.panic("let bindings must be a list");
-
-  // Bind using default env.def for safety
-  bindings.forEach(([key, value]) => env.def(key, value));
-
-  // Mimic normal eval loop
-  let tmp = rest.map((exp) => evalAst(exp, env));
-  tmp = tmp.map((exp) => apply(exp));
-
-  return tmp[tmp.length - 1];
-};
-
-// TODO: check for unallowed keys
-const resolveKey = (key: string, env: Env): Atom => {
-  if (key in env) return env[key] as Atom;
-  if (env.outer) return resolveKey(key, env.outer);
-  return Error.panic(`unknown variable: ${key}`);
-};
 
 const evalAst = (ast: Ast, env: Env): Ast => {
   if (Array.isArray(ast)) {
@@ -94,3 +62,4 @@ const evaluator = {
 };
 
 export default evaluator;
+export { evalAst, apply };
