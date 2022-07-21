@@ -1,5 +1,8 @@
-import Error from "@utils/error.ts";
 import type { Atom } from "./atom.ts";
+
+import core from "./core.ts";
+
+import Error from "@utils/error.ts";
 
 type Constants = string[];
 type Env = {
@@ -10,18 +13,9 @@ type Env = {
   [key: string]: Atom | Env | Constants;
 };
 
-// prettier-ignore
-const reservedKeys = [
-    // Keywords
-    "def", "defc", "let", "set", "write", 
-    // Basic operators
-    "+", "-", "*", "/", 
-    // Base values
-    "true", "false", "nil"
-];
-
 const set = (env: Env, key: string, value: Atom) => {
-  if (reservedKeys.includes(key))
+  // some typescript black magic
+  if (core[key as keyof typeof core])
     Error.panic(`cannot (re)define reserved variable: ${key}`);
 
   if (env.constants.includes(key))
@@ -42,13 +36,9 @@ const setConst = (env: Env, key: string, value: Atom) => {
 const env: Env = {
   outer: null,
   constants: [],
-  "+": (a: number, b: number) => a + b,
-  "-": (a: number, b: number) => a - b,
-  "*": (a: number, b: number) => a * b,
-  "/": (a: number, b: number) => a / b,
-  write: (...args: Atom[]) => args,
   def: (key: string, value: Atom) => set(env, key, value),
   defc: (key: string, value: Atom) => setConst(env, key, value), // Define immutable constants
+  ...core,
 };
 
 const newEnv = (outer: Env): Env => {

@@ -28,7 +28,7 @@ const apply = (ast: Ast): Atom => {
 
   if (ast.length < 2) return (ast[0] ? ast[0] : null) as Atom;
 
-  if (!(typeof ast[0] === "function")) return Error.panic("not a function");
+  if (!(typeof ast[0] === "function")) return ast as any; // FIXME: definitely not typesafe
 
   let [fn, ...args] = ast;
   args = args.map((exp) => apply(exp));
