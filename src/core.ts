@@ -35,7 +35,7 @@ const core = {
   count: (a: Atom[]) => a.length,
 
   // Basic functions
-  write: (...args: Atom[]) => args,
+  write: (...args: Atom[]) => console.log(args),
 };
 
 export default core;

@@ -1,4 +1,4 @@
-(lambda (x) (+ x 1)) ; except function
+(write (lambda (x) (+ x 1))) ; except function
 
 ((lambda (x) (+ x 1)) 1) ; => 2
 

@@ -1,7 +1,7 @@
 import type { Ast, KeyVal } from "../read.ts";
 import { type Env, newEnv } from "../env.ts";
 
-import { evalApply } from "./index.ts";
+import { _eval } from "./index.ts";
 
 import Error from "@utils/error.ts";
 
@@ -18,7 +18,7 @@ const evalLet = (ast: Ast, _env: Env) => {
   bindings.forEach(([key, value]) => env.def(key, value));
 
   // Mimic normal eval loop
-  const tmp = rest.map((exp) => evalApply(exp, env));
+  const tmp = rest.map((exp) => _eval(exp, env));
 
   return tmp[tmp.length - 1];
 };

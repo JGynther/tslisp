@@ -6,10 +6,10 @@ import handleDef from "./def.ts";
 import resolveKey from "./key.ts";
 import evalLambda from "./lambda.ts";
 
-import Error from "@utils/error.ts";
-
 const evalAst = (ast: Ast, env: Env): Ast => {
   if (Array.isArray(ast)) {
+    if (ast.length === 1) return _eval(ast[0], env);
+
     switch (ast[0]) {
       case "def":
         return handleDef(ast, env);
@@ -23,8 +23,17 @@ const evalAst = (ast: Ast, env: Env): Ast => {
       case "lambda":
         return evalLambda(ast, env);
 
-      default:
-        return ast.map((exp) => evalAst(exp, env));
+      default: {
+        // FIXME: clean this up
+        const tmp: Ast = [];
+
+        ast.forEach((exp) => {
+          const res = _eval(exp, env);
+          res && tmp.push(res);
+        });
+
+        return tmp;
+      }
     }
   }
 
@@ -47,34 +56,11 @@ const apply = (ast: Ast): Ast => {
   return fn(...args);
 };
 
-const evalApply = (ast: Ast, env: Env) => apply(evalAst(ast, env));
-
-const _eval = (ast: Ast, env: Env) => {
-  if (!Array.isArray(ast)) return ast;
-
-  const res: Ast = [];
-
-  for (let i = 0; i < ast.length; ++i) {
-    let exp = ast[i];
-
-    if (!Array.isArray(exp)) return ast;
-
-    try {
-      exp = evalAst(exp, env);
-      exp = apply(exp);
-      res.push(exp);
-    } catch (error) {
-      // Improve error creation on code prettyfying
-      Error.panic({ message: error, code: exp?.toString() });
-    }
-  }
-
-  return res;
-};
+const _eval = (ast: Ast, env: Env) => apply(evalAst(ast, env));
 
 const evaluator = {
   eval: _eval,
 };
 
 export default evaluator;
-export { evalAst, apply, evalApply, _eval };
+export { _eval };
