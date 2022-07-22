@@ -1,15 +1,13 @@
 import reader, { type Ast } from "./read.ts";
-import printer from "./print.ts";
 import evaluator from "./eval/index.ts";
 
 import env, { type Env } from "./env.ts";
 
-import type { Atom } from "./atom.ts";
 import Error from "@utils/error.ts";
 
 const READ = (str: string) => reader.read(str);
 const EVAL = (ast: Ast, env: Env) => evaluator.eval(ast, env);
-const PRINT = (exp: Atom | Atom[]) => printer.print(exp);
+const PRINT = (exp: Ast) => console.log(exp); // TODO: create proper printer..
 
 const rep = (str: string, env: Env) => PRINT(EVAL(READ(str), env));
 

@@ -1,18 +1,31 @@
 import type { Ast } from "../read.ts";
 import type { Env } from "../env.ts";
-import type { Atom } from "../atom.ts";
 
 import evalLet from "./let.ts";
 import handleDef from "./def.ts";
 import resolveKey from "./key.ts";
+import evalLambda from "./lambda.ts";
 
 import Error from "@utils/error.ts";
 
 const evalAst = (ast: Ast, env: Env): Ast => {
   if (Array.isArray(ast)) {
-    if (ast[0] === "def" || ast[0] === "defc") return handleDef(ast, env);
-    if (ast[0] === "let") return evalLet(ast, env);
-    return ast.map((ast) => evalAst(ast, env));
+    switch (ast[0]) {
+      case "def":
+        return handleDef(ast, env);
+
+      case "defc":
+        return handleDef(ast, env);
+
+      case "let":
+        return evalLet(ast, env);
+
+      case "lambda":
+        return evalLambda(ast, env);
+
+      default:
+        return ast.map((exp) => evalAst(exp, env));
+    }
   }
 
   if (typeof ast === "string") {
@@ -23,12 +36,10 @@ const evalAst = (ast: Ast, env: Env): Ast => {
   return ast;
 };
 
-const apply = (ast: Ast): Atom => {
+const apply = (ast: Ast): Ast => {
   if (!Array.isArray(ast)) return ast;
 
-  if (ast.length < 2) return (ast[0] ? ast[0] : null) as Atom;
-
-  if (!(typeof ast[0] === "function")) return ast as any; // FIXME: definitely not typesafe
+  if (!(typeof ast[0] === "function")) return ast;
 
   let [fn, ...args] = ast;
   args = args.map((exp) => apply(exp));
@@ -36,13 +47,17 @@ const apply = (ast: Ast): Atom => {
   return fn(...args);
 };
 
+const evalApply = (ast: Ast, env: Env) => apply(evalAst(ast, env));
+
 const _eval = (ast: Ast, env: Env) => {
   if (!Array.isArray(ast)) return ast;
 
-  const res: Atom[] = [];
+  const res: Ast = [];
 
-  ast.forEach((exp) => {
-    if (!Array.isArray(exp)) return;
+  for (let i = 0; i < ast.length; ++i) {
+    let exp = ast[i];
+
+    if (!Array.isArray(exp)) return ast;
 
     try {
       exp = evalAst(exp, env);
@@ -52,7 +67,7 @@ const _eval = (ast: Ast, env: Env) => {
       // Improve error creation on code prettyfying
       Error.panic({ message: error, code: exp?.toString() });
     }
-  });
+  }
 
   return res;
 };
@@ -62,4 +77,4 @@ const evaluator = {
 };
 
 export default evaluator;
-export { evalAst, apply };
+export { evalAst, apply, evalApply, _eval };

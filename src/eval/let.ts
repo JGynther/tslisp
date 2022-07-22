@@ -1,11 +1,13 @@
 import type { Ast, KeyVal } from "../read.ts";
 import { type Env, newEnv } from "../env.ts";
-import { evalAst, apply } from "./index.ts";
+
+import { evalApply } from "./index.ts";
+
 import Error from "@utils/error.ts";
 
 // Evaluate let expressions "out of" normal loop,
 // ie. implement a loop similar to normal eval loop
-const evalLet = (ast: Ast[], _env: Env) => {
+const evalLet = (ast: Ast, _env: Env) => {
   const [, bindings, ...rest] = ast as [string, KeyVal[], Ast];
   const env = newEnv(_env);
 
@@ -16,8 +18,7 @@ const evalLet = (ast: Ast[], _env: Env) => {
   bindings.forEach(([key, value]) => env.def(key, value));
 
   // Mimic normal eval loop
-  let tmp = rest.map((exp) => evalAst(exp, env));
-  tmp = tmp.map((exp) => apply(exp));
+  const tmp = rest.map((exp) => evalApply(exp, env));
 
   return tmp[tmp.length - 1];
 };
