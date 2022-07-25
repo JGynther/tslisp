@@ -29,7 +29,7 @@ const evalAst = (ast: Ast, env: Env): Ast => {
 
         ast.forEach((exp) => {
           const res = _eval(exp, env);
-          res && tmp.push(res);
+          (res || res === 0) && tmp.push(res);
         });
 
         return tmp;

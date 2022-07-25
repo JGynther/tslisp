@@ -3,7 +3,8 @@ type Atom = Function | string | number | boolean | null;
 
 const atom = (token: string) => {
   // If given atom is a number
-  if (Number(token)) return Number(token);
+  const testNumber = Number(token);
+  if (testNumber || testNumber === 0) return Number(token);
 
   // True, false, null
   switch (token) {
