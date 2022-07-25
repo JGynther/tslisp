@@ -8,8 +8,8 @@ type Constants = string[];
 type Env = {
   outer: Env | null;
   constants: Constants;
-  def: (key: string, value: Atom) => Atom;
-  defc: (key: string, value: Atom) => Atom;
+  def: (key: string, value: Atom) => void;
+  defc: (key: string, value: Atom) => void;
   [key: string]: Atom | Env | Constants;
 };
 
@@ -22,15 +22,11 @@ const set = (env: Env, key: string, value: Atom) => {
     Error.panic(`cannot redefine constant: ${key}`);
 
   env[key] = value;
-
-  return value;
 };
 
 const setConst = (env: Env, key: string, value: Atom) => {
   set(env, key, value);
   env.constants.push(key);
-
-  return value;
 };
 
 const env: Env = {
