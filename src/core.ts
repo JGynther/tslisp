@@ -25,6 +25,10 @@ const core = {
 
     return a === b;
   },
+  "!=": <T>(a: T, b: T) => !core["="](a, b),
+
+  // Math
+  int: (a: number) => parseInt(a as unknown as string),
 
   // If's and such
   if: (cond: Atom, then: Atom, else_: Atom) => (cond ? then : else_),
