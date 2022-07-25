@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "deno run --allow-read --import-map=import.json src/index.ts",
-    "example": "pnpm dev 'src/example/hello.lisp'",
+    "example": "pnpm dev 'example/hello.lisp'",
     "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

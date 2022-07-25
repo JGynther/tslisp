@@ -2,13 +2,12 @@ import { type Ast } from "./read.ts";
 
 import { READ, EVAL } from "./repl.ts";
 import { Env } from "./env.ts";
-import { _eval } from "./eval/index.ts";
 
 import Error from "@utils/error.ts";
 
 const _import = (name: string, env: Env) => {
   try {
-    name = `src/std/${name}.lisp`;
+    name = `std/${name}.lisp`;
     const file = Deno.readTextFileSync(name);
     EVAL(READ(file), env);
   } catch (error) {
