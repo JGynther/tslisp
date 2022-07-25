@@ -27,6 +27,31 @@ const createTree = (str: string) => {
       continue;
     }
 
+    // Handle strings
+    // TODO: this is not pretty
+    if (str[i] === '"') {
+      pushToken();
+
+      token += str[i];
+      ++i;
+      let open = true;
+
+      for (; i < length; ++i) {
+        token += str[i];
+        if (str[i] !== '"') continue;
+
+        open = false;
+        ast.push(token);
+        token = "";
+
+        break;
+      }
+
+      if (open) Error.panic("unclosed string");
+
+      continue;
+    }
+
     if (str[i] === "(") {
       pushToken();
 
