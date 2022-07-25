@@ -28,4 +28,4 @@ const repl = {
 };
 
 export default repl;
-export { rep };
+export { READ, EVAL, rep };

@@ -6,6 +6,8 @@ import handleDef from "./def.ts";
 import resolveKey from "./key.ts";
 import evalLambda from "./lambda.ts";
 
+import { handleImport } from "../import.ts";
+
 const evalAst = (ast: Ast, env: Env): Ast => {
   if (Array.isArray(ast)) {
     if (ast.length === 1) return _eval(ast[0], env);
@@ -22,6 +24,9 @@ const evalAst = (ast: Ast, env: Env): Ast => {
 
       case "lambda":
         return evalLambda(ast, env);
+
+      case "import":
+        return handleImport(ast, env);
 
       default: {
         // FIXME: clean this up

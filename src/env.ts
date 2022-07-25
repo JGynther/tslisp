@@ -1,6 +1,7 @@
 import type { Atom } from "./atom.ts";
 
 import core from "./core.ts";
+import _import from "./import.ts";
 
 import Error from "@utils/error.ts";
 
@@ -34,6 +35,7 @@ const env: Env = {
   constants: [],
   def: (key: string, value: Atom) => set(env, key, value),
   defc: (key: string, value: Atom) => setConst(env, key, value), // Define immutable constants
+  import: (name: string) => _import(name, env),
   ...core,
 };
 
