@@ -18,10 +18,14 @@ const atom = (token: string) => {
   return token;
 };
 
-const atomize = (tokens: string[]) => {
-  const l = tokens.length;
+const atomize = (_tokens: string) => {
+  const tokens = _tokens.split(/\s+/);
+
+  const length = tokens.length;
   const atoms: Atom[] = [];
-  for (let i = 0; i < l; ++i) atoms[i] = atom(tokens[i]);
+
+  for (let i = 0; i < length; ++i) atoms[i] = atom(tokens[i]);
+
   return atoms;
 };
 

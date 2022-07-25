@@ -14,7 +14,7 @@ const createTree = (str: string) => {
 
     if (!token) return;
 
-    const atoms = atomize(token.split(" "));
+    const atoms = atomize(token);
     ast.push(...atoms);
 
     token = "";
